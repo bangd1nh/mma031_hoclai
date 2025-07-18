@@ -10,35 +10,41 @@ interface AuthContextType {
     isLoggedIn: boolean;
     login: (email: string, password: string) => void;
     logout: () => void;
-    register: (email: string, password: string) => void;
+    register: (email: string, password: string, fullName: string) => void;
+    loginError: boolean;
+    user: { fullName: string; email: string };
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [user, setUser] = useState({ email: "", password: "" });
+    const [user, setUser] = useState({
+        email: "admin@admin.com",
+        password: "admin",
+        fullName: "admin",
+    });
+    const [loginError, setLoginError] = useState(false);
 
     const login = (email: string, password: string) => {
-        if (email === "admin@admin.com" && password === "admin") {
-            setIsLoggedIn(true);
-        }
         if (email === user.email && password === user.password) {
             setIsLoggedIn(true);
         }
+        setLoginError(true);
     };
 
     const logout = () => {
-        // Clear user session, etc.
         setIsLoggedIn(false);
     };
 
-    const register = (email: string, password: string) => {
-        setUser({ email: email, password: password });
+    const register = (email: string, password: string, fullName: string) => {
+        setUser({ email: email, password: password, fullName: fullName });
     };
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, login, logout, register }}>
+        <AuthContext.Provider
+            value={{ isLoggedIn, login, logout, register, loginError, user }}
+        >
             {children}
         </AuthContext.Provider>
     );

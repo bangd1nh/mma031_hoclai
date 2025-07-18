@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Button, StyleSheet } from "react-native";
+import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 
 interface Props {
     sortOrder: "asc" | "desc";
@@ -8,24 +8,58 @@ interface Props {
 
 const ProductSortBar: React.FC<Props> = ({ sortOrder, onSortChange }) => (
     <View style={styles.container}>
-        <Button
-            title="Giá tăng dần"
-            color={sortOrder === "asc" ? "#1976D2" : "#888"}
+        <TouchableOpacity
+            style={[styles.sortBtn, sortOrder === "asc" && styles.activeBtn]}
             onPress={() => onSortChange("asc")}
-        />
-        <Button
-            title="Giá giảm dần"
-            color={sortOrder === "desc" ? "#1976D2" : "#888"}
+        >
+            <Text
+                style={[
+                    styles.sortText,
+                    sortOrder === "asc" && styles.activeText,
+                ]}
+            >
+                Giá tăng dần
+            </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+            style={[styles.sortBtn, sortOrder === "desc" && styles.activeBtn]}
             onPress={() => onSortChange("desc")}
-        />
+        >
+            <Text
+                style={[
+                    styles.sortText,
+                    sortOrder === "desc" && styles.activeText,
+                ]}
+            >
+                Giá giảm dần
+            </Text>
+        </TouchableOpacity>
     </View>
 );
 
 const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
-        justifyContent: "space-between",
-        marginBottom: 12,
+        justifyContent: "center",
+        marginBottom: 10,
+    },
+    sortBtn: {
+        paddingVertical: 8,
+        paddingHorizontal: 18,
+        borderRadius: 8,
+        backgroundColor: "#e3eafc",
+        marginHorizontal: 6,
+    },
+    activeBtn: {
+        backgroundColor: "#1976D2",
+    },
+    sortText: {
+        color: "#1976D2",
+        fontWeight: "bold",
+        fontSize: 15,
+    },
+    activeText: {
+        color: "#fff",
     },
 });
 

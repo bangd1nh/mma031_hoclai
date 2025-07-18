@@ -14,19 +14,27 @@ const ProductItem: React.FC<Props> = ({ product, onDelete, onEdit }) => (
             <Image source={{ uri: product.image }} style={styles.image} />
         ) : (
             <View style={styles.imagePlaceholder}>
-                <Text>Không có ảnh</Text>
+                <Text style={{ color: "#888" }}>Không có ảnh</Text>
             </View>
         )}
         <View style={{ flex: 1 }}>
             <Text style={styles.productName}>{product.name}</Text>
             <Text style={styles.productDesc}>{product.description}</Text>
-            <Text style={styles.productPrice}>Giá: {product.price}₫</Text>
+            <Text style={styles.productPrice}>
+                Giá: {product.price.toLocaleString()}₫
+            </Text>
         </View>
-        <TouchableOpacity onPress={() => onDelete(product.id)}>
-            <Text style={styles.deleteBtn}>Xóa</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => onEdit(product)}>
+        <TouchableOpacity
+            onPress={() => onEdit(product)}
+            style={styles.actionBtn}
+        >
             <Text style={styles.editBtn}>Sửa</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+            onPress={() => onDelete(product.id)}
+            style={styles.actionBtn}
+        >
+            <Text style={styles.deleteBtn}>Xóa</Text>
         </TouchableOpacity>
     </View>
 );
@@ -36,30 +44,36 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: "#fff",
-        borderRadius: 10,
-        padding: 12,
-        marginBottom: 10,
-        shadowColor: "#000",
+        borderRadius: 14,
+        padding: 14,
+        marginBottom: 12,
+        shadowColor: "#1976D2",
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 2,
+        shadowOpacity: 0.12,
+        shadowRadius: 8,
+        elevation: 4,
     },
-    image: { width: 60, height: 60, borderRadius: 8, marginRight: 12 },
+    image: { width: 60, height: 60, borderRadius: 10, marginRight: 14 },
     imagePlaceholder: {
         width: 60,
         height: 60,
-        borderRadius: 8,
-        marginRight: 12,
-        backgroundColor: "#eee",
+        borderRadius: 10,
+        marginRight: 14,
+        backgroundColor: "#f0f4ff",
         justifyContent: "center",
         alignItems: "center",
     },
-    productName: { fontSize: 18, fontWeight: "bold" },
-    productDesc: { fontSize: 14, color: "#555" },
-    productPrice: { fontSize: 16, color: "#1976D2", marginTop: 4 },
-    deleteBtn: { color: "red", fontWeight: "bold", marginLeft: 8 },
-    editBtn: { color: "#1976D2", fontWeight: "bold", marginLeft: 8 },
+    productName: { fontSize: 18, fontWeight: "bold", color: "#1976D2" },
+    productDesc: { fontSize: 14, color: "#555", marginTop: 2 },
+    productPrice: {
+        fontSize: 16,
+        color: "#388e3c",
+        marginTop: 6,
+        fontWeight: "bold",
+    },
+    actionBtn: { marginLeft: 8 },
+    deleteBtn: { color: "#e53935", fontWeight: "bold", fontSize: 15 },
+    editBtn: { color: "#1976D2", fontWeight: "bold", fontSize: 15 },
 });
 
 export default ProductItem;

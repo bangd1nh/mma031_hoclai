@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Button, StyleSheet, TextInput } from "react-native";
+import { View, Text, Button, StyleSheet, TextInput, Alert } from "react-native";
 import { useAuth } from "../../context/AuthContext";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { AuthStackParamList } from "../../navigation/AuthNavigator";
@@ -14,11 +14,30 @@ interface Props {
 }
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
-    const { login } = useAuth();
+    const { login, loginError } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+
+    const validate = () => {
+        if (!email.trim()) {
+            setError("Vui lòng nhập email");
+            return false;
+        }
+        if (!/\S+@\S+\.\S+/.test(email)) {
+            setError("Email không hợp lệ");
+            return false;
+        }
+        if (!password) {
+            setError("Vui lòng nhập mật khẩu");
+            return false;
+        }
+        setError("");
+        return true;
+    };
 
     const handleLogin = () => {
+        if (!validate()) return;
         login(email, password);
     };
 
@@ -26,6 +45,10 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         <View style={styles.container}>
             <View style={styles.form}>
                 <Text style={styles.title}>Đăng nhập</Text>
+                {error ? <Text style={styles.error}>{error}</Text> : null}
+                {loginError ? (
+                    <Text style={styles.error}>sai mật khẩu hoặc email</Text>
+                ) : null}
                 <TextInput
                     style={styles.input}
                     placeholder="Email"
@@ -54,7 +77,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                     style={styles.registerText}
                     onPress={() => navigation.navigate("Register")}
                 >
-                    Chưa có tài khoản? Đăng ký
+                    Chưa có tài khoản?{" "}
+                    <Text style={{ fontWeight: "bold" }}>Đăng ký</Text>
                 </Text>
             </View>
         </View>
@@ -66,51 +90,58 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#f5f6fa",
+        backgroundColor: "#e3eafc",
     },
     form: {
         width: "90%",
         maxWidth: 350,
         backgroundColor: "#fff",
-        borderRadius: 12,
-        padding: 24,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.15,
-        shadowRadius: 8,
-        elevation: 5,
+        borderRadius: 16,
+        padding: 28,
+        shadowColor: "#1976D2",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.18,
+        shadowRadius: 12,
+        elevation: 8,
     },
     title: {
-        fontSize: 28,
+        fontSize: 30,
         fontWeight: "bold",
         color: "#1976D2",
-        marginBottom: 24,
+        marginBottom: 18,
         textAlign: "center",
+        letterSpacing: 1,
     },
     input: {
         width: "100%",
-        height: 44,
+        height: 48,
         borderColor: "#1976D2",
         borderWidth: 1,
-        borderRadius: 8,
-        marginBottom: 16,
-        paddingHorizontal: 12,
+        borderRadius: 10,
+        marginBottom: 14,
+        paddingHorizontal: 14,
         backgroundColor: "#f0f4ff",
-        fontSize: 16,
+        fontSize: 17,
         color: "#222",
     },
     buttonContainer: {
         marginTop: 8,
         marginBottom: 16,
-        borderRadius: 8,
+        borderRadius: 10,
         overflow: "hidden",
     },
     registerText: {
         color: "#1976D2",
         textAlign: "center",
         textDecorationLine: "underline",
+        fontSize: 16,
+        marginTop: 10,
+    },
+    error: {
+        color: "#e53935",
+        marginBottom: 10,
+        textAlign: "center",
         fontSize: 15,
-        marginTop: 8,
     },
 });
 

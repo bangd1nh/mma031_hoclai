@@ -1,17 +1,19 @@
-import React, { useState, useMemo } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, Button } from "react-native";
 import { useProduct } from "../../context/ProductContext";
 import ProductList from "../../Components/ProductList";
 import ProductForm from "../../Components/ProductForm";
 import ProductSearchBar from "../../Components/ProductSearchBar";
 import ProductSortBar from "../../Components/ProductSortBar";
 import { Product } from "../../context/ProductContext";
+import { useAuth } from "../../context/AuthContext";
 
 const HomeScreen: React.FC = () => {
     const { products, addProduct, deleteProduct, updateProduct } = useProduct();
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
     const [search, setSearch] = useState("");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+    const { logout, user } = useAuth();
 
     const handleEdit = (product: Product) => setEditingProduct(product);
 
@@ -26,8 +28,7 @@ const HomeScreen: React.FC = () => {
 
     const handleCancelEdit = () => setEditingProduct(null);
 
-    // Filter and sort products
-    const filteredProducts = useMemo(() => {
+    const filteredProducts = () => {
         let result = products.filter((p) =>
             p.name.toLowerCase().includes(search.toLowerCase())
         );
@@ -35,15 +36,18 @@ const HomeScreen: React.FC = () => {
             sortOrder === "asc" ? a.price - b.price : b.price - a.price
         );
         return result;
-    }, [products, search, sortOrder]);
+    };
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Danh sách sản phẩm</Text>
+            <Text style={styles.subTitle}>
+                xin chào {user.fullName} email: {user.email}
+            </Text>
             <ProductSearchBar value={search} onChange={setSearch} />
             <ProductSortBar sortOrder={sortOrder} onSortChange={setSortOrder} />
             <ProductList
-                products={filteredProducts}
+                products={filteredProducts()}
                 onDelete={deleteProduct}
                 onEdit={handleEdit}
             />
@@ -52,6 +56,9 @@ const HomeScreen: React.FC = () => {
                 editingProduct={editingProduct}
                 onCancelEdit={handleCancelEdit}
             />
+            <View style={{ marginTop: 10 }}>
+                <Button title="đăng xuất" onPress={logout} color="#888" />
+            </View>
         </View>
     );
 };
@@ -66,6 +73,11 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: "bold",
+        marginBottom: 16,
+        textAlign: "center",
+    },
+    subTitle: {
+        fontSize: 14,
         marginBottom: 16,
         textAlign: "center",
     },
